@@ -29,6 +29,9 @@ class RAPMModel:
         return self
 
     def clean_for_modeling(self):
+        """ prepares raw data for modeling"""
+
+        # take only the columns from the raw data we need
         cols_to_keep = ['Ev_Team',
                         'Away_Team',
                         'Home_Team',
@@ -47,6 +50,8 @@ class RAPMModel:
                         ]
         tmp = self.raw_data[cols_to_keep]
 
+        # grab unique teams and players because modeling strategy requires variables for all unique
+        #  teams (xt) and players (xp)
         teams = tmp['Home_Team'].unique()
         players = pd.Series(tmp[['awayPlayer1_id',
                                  'awayPlayer2_id',
@@ -60,7 +65,10 @@ class RAPMModel:
                                  'homePlayer4_id',
                                  'homePlayer5_id',
                                  'homePlayer6_id']].values.flat).unique()
+        # initialize data frames for each component of the design matrix X
+        # teams
         xt = pd.DataFrame(index=range(0, len(tmp)), columns=teams)
+        # players
         xp = pd.DataFrame(index=range(0, len(tmp)), columns=players)
         # NOTE: 1 for home team goal, -1 for away team goal
         y = pd.DataFrame(index=range(0, len(tmp)), columns=['scoring_team'])
@@ -74,6 +82,6 @@ class RAPMModel:
             # if its the away team they get a -1
             else:
                 y.loc[y.index == i, 'scoring_team'] = -1
-        
+
 if __name__ == '__main__':
     print(RAPMModel().get_raw_data().clean_for_modeling())
