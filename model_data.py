@@ -1,5 +1,5 @@
 """
-Python class for implementing Gramacy, Jensen, and Taddy (2013)'s RAPM model
+Python class for cleaning data to implement Gramacy, Jensen, and Taddy (2013)'s RAPM model
 
 Jordan Navin, On The Hill Analytics
 
@@ -10,7 +10,7 @@ from oth_db_tools import Connection
 import pandas as pd
 
 
-class RAPMModel:
+class RAPMModelData:
 
     def __init__(self):
         self.raw_data = None
@@ -83,5 +83,8 @@ class RAPMModel:
             else:
                 y.loc[y.index == i, 'scoring_team'] = -1
 
+            # now do xt (team effects)
+            print(xt.loc[xt.index == i, goal['Home_Team'].values[0]])
+
 if __name__ == '__main__':
-    print(RAPMModel().get_raw_data().clean_for_modeling())
+    print(RAPMModelData().get_raw_data().clean_for_modeling())
